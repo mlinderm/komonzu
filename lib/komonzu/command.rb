@@ -46,21 +46,27 @@ module Komonzu
         runner.send(method)
       end
 
-      def parse(command)
-        parts = command.split(':')
-        case parts.size
+      def parse(command)	
+				command = [command] if Array.try_convert(command).nil?
+								
+				const = Komonzu::Command
+				if command.size > 1
+					const = const.const_get(command.shift.capitalize)
+				end
+
+				parts = command.shift.split(':')
+				case parts.size
 					when 1
 						begin 
-							return eval("Komonzu::Command::#{command.capitalize}"), :index
+							return const.const_get(parts[0].capitalize), :index
 						rescue NameError
 							raise InvalidCommand
 						end
 					else
 						begin
-              const = Komonzu::Command
-              command = parts.pop
-              parts.each { |part| const = const.const_get(part.capitalize) }
-              return const, command.to_sym
+							command = parts.pop
+							parts.each { |part| const = const.const_get(part.capitalize) }
+							return const, command.to_sym
             rescue NameError
               raise InvalidCommand
             end
@@ -72,8 +78,8 @@ module Komonzu
       end
 
       def extract_error(body)
-        msg = parse_error_xml(body) || parse_error_json(body) || parse_error_plain(body) || 'Internal server error'
-        msg.split("\n").map { |line| ' !   ' + line }.join("\n")
+				msg = parse_error_xml(body) || parse_error_json(body) || parse_error_plain(body) || 'Internal server error'
+				msg.split("\n").map { |line| ' !   ' + line }.join("\n")
       end
 
       def parse_error_xml(body)
@@ -85,7 +91,7 @@ module Komonzu
 
       def parse_error_json(body)
         json = JSON.parse(body.to_s)
-        json['error']
+				json['error']
       rescue JSON::ParserError
       end
 

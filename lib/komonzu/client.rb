@@ -47,8 +47,19 @@ class Komonzu::Client
     #end
 		[]
   end
-	
 
+	def config_vars(project_name)
+    JSON.parse get("/projects/#{project_name}/config_vars", :accept => 'json').to_s
+  end
+
+  def add_config_vars(project_name, new_vars)
+    post("/projects/#{project_name}/config_vars", new_vars.to_json, :accept => 'json').to_s
+  end
+
+  def remove_config_var(project_name, key)
+    delete("/projects/#{project_name}/config_vars/#{escape(key)}", :accept => 'json').to_s
+  end
+	
 	##################
 
   def resource(uri)

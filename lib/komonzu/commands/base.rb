@@ -8,7 +8,7 @@ module Komonzu::Command
     attr_reader :autodetected_name
     def initialize(args, komonzu=nil)
       @args = args
-      @komonzu = komonzu
+			@komonzu = komonzu
       @autodetected_name = false
     end
 
@@ -21,7 +21,7 @@ module Komonzu::Command
       raise(CommandFailed, "You must specify a project or app name after --name") if name == false
       unless name
         app = extract_name_in_dir(Dir.pwd) ||
-        raise(CommandFailed, "No app specified.\nRun this command from app folder or set it adding --app <app name>") if force
+        raise(CommandFailed, "No app or project specified.\nRun this command from app folder or set it by adding --name <name>") if force
         @autodetected_name = true
       end
       name
@@ -32,7 +32,7 @@ module Komonzu::Command
 
       if remote = extract_option('--remote')
         remotes[remote]
-      elsif remote = extract_app_from_git_config
+      elsif remote = extract_name_from_git_config
         remotes[remote]
       else
         apps = remotes.values.uniq
@@ -66,7 +66,7 @@ module Komonzu::Command
     end
 
     def extract_option(options, default=true)
-      values = options.is_a?(Array) ? options : [options]
+			values = options.is_a?(Array) ? options : [options]
       return unless opt_index = args.select { |a| values.include? a }.first
       opt_position = args.index(opt_index) + 1
       if args.size > opt_position && opt_value = args[opt_position]
@@ -98,12 +98,12 @@ module Komonzu::Command
     end
   end
 
-  class BaseWithName < Base
-    attr_accessor :name
+  class BaseWithProject < Base
+    attr_accessor :project
 
     def initialize(args, komonzu=nil)
       super(args, komonzu)
-      @name ||= extract_name
+      @project ||= extract_name
     end
   end
 end

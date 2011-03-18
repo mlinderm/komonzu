@@ -40,12 +40,10 @@ module Komonzu::Command
         group.space
       end
 			group 'Project Commands' do |group|
-				group.command 'project:list',                 'list your projects'
-        group.command 'project:create [<name>]',      'create a new project'
-        group.command 'project:info',                 'show project info'
-        group.command 'project:rename <newname>',     'rename the project'
-        group.command 'project:destroy',              'destroy the project permanently'
-        group.space
+				group.command 'project config',                       'display the project\'s config vars (environment)'
+        group.command 'project config:add key=val [...]',     'add one or more config vars'
+        group.command 'project config:remove key [...]',      'remove one or more config vars'
+			 	group.space
 			end
 		end
 

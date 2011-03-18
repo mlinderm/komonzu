@@ -8,7 +8,14 @@ require 'komonzu/command'
 
 args = ARGV.dup
 ARGV.clear
-command = args.shift.strip rescue 'help'
+
+command = []
+begin
+	command.push args.shift
+	command.push args.shift if command[0] =~ /project/
+rescue
+	command = ['help']
+end
 
 Komonzu::Command.run(command, args)
 
