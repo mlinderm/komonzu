@@ -71,7 +71,7 @@ module Komonzu::Command
       password = running_on_windows? ? ask_for_password_on_windows : ask_for_password
       api_key = Komonzu::Client.auth(user, password, host)['api_key']
 
-      [api_key, user]
+      [api_key, ""]
     end
 
     def ask_for_password_on_windows
@@ -142,8 +142,9 @@ module Komonzu::Command
           display "#{index+1}) #{File.basename(key)}"
         end
         display "Which would you like to use with your Komonzu account? (0 for none) ", false
-				unless ask.to_i == 0 
-					chosen = public_keys[ask.to_i-1] rescue error("Invalid choice")
+				key_idx = ask.to_i
+				unless key_idx == 0 
+					chosen = public_keys[key_idx-1] rescue error("Invalid choice")
 					associate_key(chosen)
 				end
       end

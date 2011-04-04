@@ -40,14 +40,24 @@ class Komonzu::Client
 		get('/users/edit', :accept => 'html')
 	end
 
-	def keys
-    #doc = xml get('/user/keys').to_s
-    #doc.elements.to_a('//keys/key').map do |key|
-      #key.elements['contents'].text
-    #end
-		[]
+	
+
+	# Get the list of ssh public keys for the current user.
+  def keys
+    JSON.parse get('/users/ssh_keys', :accept => 'json').to_s
   end
 
+  # Add an ssh public key to the current user.
+  def add_key(key)
+    post("/users/ssh_keys", {:key => key},  :accept => 'json').to_s
+  end
+
+  # Remove an existing ssh public key from the current user.
+  def remove_key(key)
+    delete("/users/ssh_keys/#{escape(key)}").to_s
+  end
+
+ 	
 	def config_vars(project_name)
     JSON.parse get("/projects/#{project_name}/config_vars", :accept => 'json').to_s
   end

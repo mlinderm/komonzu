@@ -11,8 +11,8 @@ ARGV.clear
 
 command = []
 begin
-	command.push args.shift
-	command.push args.shift if command[0] =~ /project/
+	command.push args.shift.strip
+	command.push args.shift.strip if command[0] =~ /project/
 rescue
 	command = ['help']
 end
